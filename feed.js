@@ -2,11 +2,11 @@ $(document).ready(function() {
     // Check if user is logged in
     const userData = JSON.parse(localStorage.getItem('userData'));
     
-    //if (!userData) {
-       // window.location.href = 'Login.html';
-       // return;
-    //}
-    //$('#welcomeUser').text('Welcome, ' + userData.username + '!');
+    if (!userData) {
+        window.location.href = 'Login.html';
+        return;
+    }
+    $('#welcomeUser').text('Welcome, ' + userData.username + '!');
 
     // Logout
     $('#logoutBtn').on('click', function() {
