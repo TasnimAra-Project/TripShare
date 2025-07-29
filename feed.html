@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelista - Share Your Adventures</title>
+    <link rel="stylesheet" href="feed.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1><i class="fas fa-globe-americas"></i> Trip Share</h1>
+                </div>
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search destinations, experiences...">
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span id="welcomeUser">Welcome!</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <button id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="content-wrapper">
+                <!-- Left Sidebar -->
+                <aside class="sidebar-left">
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-item active" data-section="feed">
+                            <i class="fas fa-home"></i>
+                            <span>Home Feed</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="explore">
+                            <i class="fas fa-compass"></i>
+                            <span>Explore</span>
+                        </a>
+                       
+                        <a href="#" class="nav-item" data-section="profile">
+                            <i class="fas fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="#" class="nav-item" data-section="saved">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Saved Posts</span>
+                        </a>
+                    </nav>
+                </aside> 
+                 <!-- Main Feed -->
+                <section class="main-feed" id="mainFeed">
+                    <!-- Create Post Section -->
+                    
+                                <div class="post-actions">
+                                    <button class="action-btn" id="shareExperienceBtn">
+                                        <i class="fas fa-plane"></i> Share Experience
+                                    </button>
+                                   
+                                </div>
+                    <!-- Feed Posts -->
+                     <!--Post should come after someone posted something, not a demo post-->
+                     <!--Post should be like someone posted something, in the share experience then it gets stored in the backend, then it shows in the feed-->
+                      <div class="feed-posts" id="feedPosts">
+                       
+                    </div>
+                </section>
+                <!-- Right Sidebar -->
+                <aside class="sidebar-right">
+                                   <div class="widget-section">
+                        <h3>Trending Destinations</h3>
+                        <div class="trending-list">
+                            <div class="trending-item">
+                                <span class="trending-number">#1</span>
+
+                                
+                            </div>
+                            <div class="trending-item">
+                                <span class="trending-number">#2</span>
+                              
+                            </div>
+                            <div class="trending-item">
+                                <span class="trending-number">#3</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                        <div class="widget-section">
+                        <h3>Suggested Friends</h3>
+                        <div class="suggested-friends">
+                            <div class="friend-suggestion">
+                                <div class="friend-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="friend-info">
+                                   
+                                </div>
+                                <button class="follow-btn">Follow</button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="feed.js"></script>
+</body>
+</html> 

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Your Travel Experience</title>
+    <link rel="stylesheet" href="post-experience.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="post-header">
+        <div class="header-content">
+            <h1><i class="fas fa-globe-americas"></i> Trip Share</h1>
+            <button id="backToFeedBtn" class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Feed</button>
+        </div>
+    </header>
+    <main class="post-main">
+        <div class="post-container">
+            <h2>Share Your Travel Experience</h2>
+            <form id="experienceForm" class="experience-form">
+                <div class="form-group">
+                    <label for="placeName">Name of the Place *</label>
+                    <input type="text" id="placeName" required placeholder="e.g., Eiffel Tower">
+                </div>
+                <div class="form-group">
+                    <label for="country">Country *</label>
+                    <input type="text" id="country" required placeholder="e.g., France">
+                </div>
+                <div class="form-group">
+                    <label for="safety">How safe did you feel? *</label>
+                    <select id="safety" required>
+                        <option value="">Select rating</option>
+                        <option value="5">⭐⭐⭐⭐⭐ Very Safe</option>
+                        <option value="4">⭐⭐⭐⭐ Safe</option>
+                        <option value="3">⭐⭐⭐ Moderate</option>
+                        <option value="2">⭐⭐ Somewhat Unsafe</option>
+                        <option value="1">⭐ Unsafe</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="affordability">How affordable was it? *</label>
+                    <select id="affordability" required>
+                        <option value="">Select rating</option>
+                        <option value="5">💰💰💰💰💰 Very Expensive</option>
+                        <option value="4">💰💰💰💰 Expensive</option>
+                        <option value="3">💰💰💰 Moderate</option>
+                        <option value="2">💰💰 Affordable</option>
+                        <option value="1">💰 Very Affordable</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="experienceDescription">Describe your experience *</label>
+                    <textarea id="experienceDescription" rows="5" required placeholder="Share your story, tips, and memorable moments..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="imageUpload">Upload a photo (optional)</label>
+                    <input type="file" id="imageUpload" accept="image/*">
+                    <div id="imagePreview" style="margin-top:10px;"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Share Experience</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="post-experience.js"></script>
+</body>
+</html> 
