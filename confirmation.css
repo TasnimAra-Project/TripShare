@@ -1,0 +1,158 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #1da1f2;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* CSS-based decorative elements */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    z-index: 10;
+    background: radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 25px, transparent 25px),
+                radial-gradient(circle at 75px 25px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 15px, transparent 15px),
+                radial-gradient(circle at 25px 75px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 15px, transparent 15px),
+                radial-gradient(circle at 75px 75px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 10px, transparent 10px);
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    z-index: 10;
+    background: radial-gradient(circle at 80px 80px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 20px, transparent 20px),
+                radial-gradient(circle at 20px 80px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 10px, transparent 10px),
+                radial-gradient(circle at 80px 20px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 10px, transparent 10px),
+                radial-gradient(circle at 50px 50px, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.9) 15px, transparent 15px);
+}
+
+.confirmation-container {
+    display: flex;
+    width: 900px;
+    height: 600px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.confirmation-left {
+    flex: 1.2;
+    position: relative;
+    background: #eaf6fb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirmation-image {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+    border-bottom-left-radius: 20px;
+}
+
+.confirmation-welcome {
+    text-align: center;
+    padding: 20px;
+}
+
+.confirmation-welcome h2 {
+    margin: 0;
+    font-size: 2em;
+    color: #1da1f2;
+}
+
+.confirmation-welcome p {
+    color: #333;
+    font-size: 1em;
+}
+
+.confirmation-right {
+    flex: 1;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    text-align: center;
+}
+
+.success-icon {
+    margin-bottom: 20px;
+    animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.confirmation-right h2 {
+    color: #28a745;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+.confirmation-right p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+.user-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.user-info p {
+    margin: 8px 0;
+    color: #333;
+    font-size: 1em;
+}
+
+.user-info strong {
+    color: #1da1f2;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #218838;
+} 
