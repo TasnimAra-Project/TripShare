@@ -49,12 +49,14 @@ $(document).ready(function() {
             username: username,
             email: email,
             phone: phone,
-            password: password
+            password: password,
+            confirmPassword: confirmPassword
+            
         };
         
         // Send registration request to backend
         $.ajax({
-            url: '/api/register',
+            url: 'http://localhost:8000/api/register',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(userData),
