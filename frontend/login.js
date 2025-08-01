@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     // Show alert if someone opens the file directly from computer
     if (window.location.protocol === 'file:') {
-        alert('Please run this app using http://localhost:5000');
+        alert('Please run this app using http://localhost:3000');
         return;
     }
 
@@ -25,7 +25,7 @@ $(document).ready(function () {
 
         // Send info to backend
         $.ajax({
-            url: '/api/login',
+            url:'http://localhost:8000/api/register',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ username, password }),

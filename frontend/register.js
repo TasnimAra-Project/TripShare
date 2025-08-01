@@ -1,7 +1,7 @@
 $(document).ready(function() {
     // Check if we're running on localhost (server)
     if (window.location.protocol === 'file:') {
-        alert('Please access this application through http://localhost:5000 instead of opening the HTML file directly.');
+        alert('Please access this application through http://localhost:3000 instead of opening the HTML file directly.');
         return;
     }
     
@@ -49,12 +49,13 @@ $(document).ready(function() {
             username: username,
             email: email,
             phone: phone,
-            password: password
+            password: password,
+            confirmPassword: confirmPassword
         };
         
         // Send registration request to backend
         $.ajax({
-            url: '/api/register',
+            url: 'http://localhost:8000/api/register',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(userData),
