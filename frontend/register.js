@@ -1,7 +1,7 @@
 $(document).ready(function() {
     // Check if we're running on localhost (server)
     if (window.location.protocol === 'file:') {
-        alert('Please access this application through http://localhost:5000 instead of opening the HTML file directly.');
+        alert('Please access this application through http://localhost:3000 instead of opening the HTML file directly.');
         return;
     }
     
