@@ -1,3 +1,4 @@
+const db = require('./db');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require ('body-parser');
@@ -29,13 +30,32 @@ app.post('/api/register', async (req, res) => {
     }
 
     // Hash Password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Saving user
-    console.log("User is registered:", {username, email, phone, hashedPassword});
+        // Insert into the Database
+        const insertQuery = 'INSERT INTO users (username, email, phone, password) VALUES (?, ?, ?, ?)';
+        const values = [username, email, phone, hashedPassword];
 
-    return res.status(201).json({message: 'User registered successfully!'});
+        db.query(insertQuery, values, (err, results) => {
+            if (err) {
+                console.error ('Error inserting user:', err);
+                return res.status(500).json({message: 'Database error'});
+            }
 
+            // Send back user info (excluding the password)
+            const newUser = {
+                 id: results.insertId,
+                 username,
+                 email,
+                 phone
+            };
+            return res.status(201).json({message: 'User registered successfully!', user: newUser});
+        });
+    } catch (error) {
+        console.error('Error in registration:', error);
+        return res.status(500).json({message: 'Internal server error'});
+    }
 
 });
 

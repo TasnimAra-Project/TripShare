@@ -49,8 +49,7 @@ $(document).ready(function() {
             username: username,
             email: email,
             phone: phone,
-            password: password,
-            confirmPassword: confirmPassword
+            password: password
         };
         
         // Send registration request to backend
