@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="post-experience.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<script async defer
+  src="">
+</script>
+
 <body>
     <header class="post-header">
         <div class="header-content">
@@ -23,9 +27,19 @@
                     <input type="text" id="placeName" required placeholder="e.g., Eiffel Tower">
                 </div>
                 <div class="form-group">
-                    <label for="country">Country *</label>
-                    <input type="text" id="country" required placeholder="e.g., France">
-                </div>
+  <label for="address">Location (U.S. address) *</label>
+  <input type="text" id="address" required placeholder="Start typing an address…">
+  <small id="addrStatus" class="help-text"></small>
+
+  <!-- hidden fields populated after verification -->
+  <input type="hidden" id="lat">
+  <input type="hidden" id="lng">
+  <input type="hidden" id="city">
+  <input type="hidden" id="state">
+  <input type="hidden" id="postalCode">
+  <input type="hidden" id="formattedAddress">
+</div>
+
                 <div class="form-group">
                     <label for="safety">How safe did you feel? *</label>
                     <select id="safety" required>
