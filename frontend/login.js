@@ -25,7 +25,7 @@ $(document).ready(function () {
 
         // Send info to backend
         $.ajax({
-            url:'http://localhost:8000/api/register',
+            url: 'http://localhost:8000/api/login',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ username, password }),

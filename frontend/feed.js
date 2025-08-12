@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    //Check if user is logged in
+    // Check if user is logged in
     const userData = JSON.parse(localStorage.getItem('userData'));
     
     if (!userData) {
