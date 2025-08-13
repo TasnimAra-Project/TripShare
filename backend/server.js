@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require ('body-parser');
 const bcrypt = require('bcryptjs');
+const path = require('path');
+const postsRouter = require('./posts');
 
 const app = express();
 const PORT = 8000;
@@ -10,6 +12,17 @@ const PORT = 8000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/posts', postsRouter);
+
+// Serve frontend folder outside backend
+
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Optional: default route to load your main HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/post-experience.html'));
+});
 
 // Test Route
 app.get('/', (req, res) => {
