@@ -51,7 +51,6 @@ $(document).ready(function() {
             phone: phone,
             password: password,
             confirmPassword: confirmPassword
-            
         };
         
         // Send registration request to backend
