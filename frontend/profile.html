@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Travelista</title>
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Existing Header (will be replaced by new design) -->
+        <header class="profile-header hidden">
+            <!-- ... existing code ... -->
+        </header>
+
+        <!-- Profile Setup Section (shown when editing profile) -->
+        <div id="profileSetup" class="profile-setup hidden">
+            <div class="setup-container">
+                <h2>Edit Your Profile</h2>
+                <p>Update your information and travel preferences!</p>
+                
+                <form id="profileForm" class="profile-form">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="username">Username *</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" placeholder="City, Country">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" rows="3" placeholder="Tell us about yourself and your travel style..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profilePhoto">Profile Photo</label>
+                        <div class="photo-upload">
+                            <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*">
+                            <div class="upload-placeholder">
+                                <i class="fas fa-camera"></i>
+                                <span>Click to upload profile photo</span>
+                            </div>
+                        </div>
+                        <div id="profilePhotoPreview" class="photo-preview hidden"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="coverPhoto">Cover Photo</label>
+                        <div class="photo-upload">
+                            <input type="file" id="coverPhoto" name="coverPhoto" accept="image/*">
+                            <div class="upload-placeholder">
+                                <i class="fas fa-image"></i>
+                                <span>Click to upload cover photo</span>
+                            </div>
+                        </div>
+                        <div id="coverPhotoPreview" class="photo-preview hidden"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancelEditBtn" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Profile Display Section (shown if profile is complete) -->
+        <div id="profileDisplay" class="profile-display">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="cover-photo-container" id="coverPhotoContainer">
+                    <img src="https://via.placeholder.com/1200x300?text=Cover+Photo" alt="Cover Photo" class="cover-photo">
+                </div>
+                <div class="profile-header-card">
+                    <!-- Back button for other users' profiles -->
+                    <div class="profile-navigation">
+                        <button class="btn-back" id="backBtn" style="display: none;" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i> Back to Feed
+                        </button>
+                    </div>
+                    
+                    <div class="profile-avatar-wrapper">
+                        <img src="https://via.placeholder.com/150" alt="Avatar" class="profile-avatar-img" id="profilePhotoDisplay">
+                        <div class="profile-info-main">
+                            <h2 id="profileFullName">Your Name</h2>
+                            <p class="profile-username" id="profileUsername">@username</p>
+                            <p class="profile-meta">
+                                <i class="fas fa-map-marker-alt"></i> <span id="profileLocation">Location not set</span> •
+                                <i class="fas fa-calendar-alt"></i> Joined <span id="profileJoinedDate">N/A</span> •
+                                <span class="level-badge" id="levelBadge">Level 1 • Beginner</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <!-- Show Follow/Message buttons for other users' profiles -->
+                        <button class="btn-follow" id="followBtn" style="display: none;"><i class="fas fa-user-plus"></i> Follow</button>
+                        <button class="btn-message" id="messageBtn" style="display: none;"><i class="fas fa-envelope"></i> Message</button>
+                        
+                        <!-- Show Edit Profile button for own profile -->
+                        <button class="btn-edit-profile" id="editProfileBtn" style="display: none;"><i class="fas fa-edit"></i> Edit Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-content-area">
+                <div class="profile-stats-tabs">
+                                         <div class="profile-stats-new">
+                         <div class="stat-item-new">
+                             <span class="stat-number-new" id="postsCount">0</span>
+                             <span class="stat-label-new">Posts</span>
+                         </div>
+                         <div class="stat-item-new">
+                             <span class="stat-number-new" id="photosCount">0</span>
+                             <span class="stat-label-new">Photos</span>
+                         </div>
+                         <div class="stat-item-new">
+                             <span class="stat-number-new" id="countriesCount">0</span>
+                             <span class="stat-label-new">Countries</span>
+                         </div>
+                         <div class="stat-item-new">
+                             <span class="stat-number-new" id="followersCount" onclick="showFollowersList(currentProfileUsername)" style="cursor: pointer; text-decoration: underline;" title="Click to see followers">0</span>
+                             <span class="stat-label-new">Followers</span>
+                         </div>
+                         <div class="stat-item-new">
+                             <span class="stat-number-new" id="followingCount" onclick="showFollowingList(currentProfileUsername)" style="cursor: pointer; text-decoration: underline;" title="Click to see who you're following">0</span>
+                             <span class="stat-label-new">Following</span>
+                         </div>
+                     </div>
+                    <div class="profile-tabs">
+                        <button class="tab-btn active" data-tab="posts">Posts</button>
+                        <button class="tab-btn" data-tab="about">About</button>
+                        <button class="tab-btn" data-tab="photos">Photos</button>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="postsTabContent">
+                    <div class="filter-bar">
+                        <input type="text" placeholder="Search places or notes..." class="search-input" id="searchInput">
+                        <select class="filter-select" id="countryFilter">
+                            <option value="">All locations</option>
+                        </select>
+                        <select class="filter-select" id="safetyFilter">
+                            <option value="">Safety (any)</option>
+                            <option value="1">⭐ Unsafe</option>
+                            <option value="2">⭐⭐ Somewhat Unsafe</option>
+                            <option value="3">⭐⭐⭐ Moderate</option>
+                            <option value="4">⭐⭐⭐⭐ Safe</option>
+                            <option value="5">⭐⭐⭐⭐⭐ Very Safe</option>
+                        </select>
+                        <select class="filter-select" id="affordabilityFilter">
+                            <option value="">Affordability (any)</option>
+                            <option value="1">💰 Very Affordable</option>
+                            <option value="2">💰💰 Affordable</option>
+                            <option value="3">💰💰💰 Moderate</option>
+                            <option value="4">💰💰💰💰 Expensive</option>
+                            <option value="5">💰💰💰💰💰 Very Expensive</option>
+                        </select>
+                        <select class="filter-select" id="sortFilter">
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="safety-high">Safety: High to Low</option>
+                            <option value="safety-low">Safety: Low to High</option>
+                            <option value="affordable">Most Affordable</option>
+                            <option value="expensive">Most Expensive</option>
+                        </select>
+                        <button class="btn-clear-filters" id="clearFilters"><i class="fas fa-times"></i> Clear</button>
+                    </div>
+                    <div id="userPosts" class="user-posts-grid">
+                        <!-- User posts will be loaded dynamically here -->
+                    </div>
+                </div>
+
+                <div class="tab-content hidden" id="aboutTabContent">
+                    <h3 id="aboutTitle">About</h3>
+                    <p id="profileBio">No bio added yet.</p>
+                    <!-- More about content can go here -->
+                </div>
+
+                <div class="tab-content hidden" id="photosTabContent">
+                    <h3>Photos</h3>
+                    <div id="userPhotos" class="user-photos-grid">
+                        <!-- User photos will be loaded dynamically here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-state hidden">
+            <!-- ... existing code ... -->
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

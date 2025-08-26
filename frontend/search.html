@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Travel Experiences - Trip Share</title>
+    <link rel="stylesheet" href="search.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="search-container">
+        <!-- Header -->
+        <header class="search-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-globe-americas"></i>
+                        <span>Travelista</span>
+                    </div>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="mainSearchInput" placeholder="Search for destinations, experiences, or keywords...">
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span id="welcomeUser">Welcome!</span>
+                    <a href="dashboard.html" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Back to Feed
+                    </a>
+                    <button id="logoutBtn">Logout</button>
+                </div>
+            </div>
+            <div class="page-title">
+                <h1>Search Travel Experiences</h1>
+                <p>Discover amazing destinations and experiences shared by travelers</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="search-main">
+            <div class="content-wrapper">
+                <!-- Left Sidebar with Filters -->
+                <aside class="sidebar-left">
+                    <div class="filter-section">
+                        <h3>Search Filters</h3>
+                        
+                        <!-- Search Input -->
+                        <div class="filter-group">
+                            <label for="searchInput">Search:</label>
+                            <input type="text" id="searchInput" placeholder="Enter keywords...">
+                        </div>
+
+                        <!-- Location Filter -->
+                        <div class="filter-group">
+                            <label for="locationFilter">Location:</label>
+                            <select id="locationFilter">
+                                <option value="">All locations</option>
+                            </select>
+                        </div>
+
+                        <!-- Budget Filter -->
+                        <div class="filter-group">
+                            <label for="budgetFilter">Budget:</label>
+                            <select id="budgetFilter">
+                                <option value="">Any budget</option>
+                                <option value="1">💰 Very Affordable</option>
+                                <option value="2">💰💰 Affordable</option>
+                                <option value="3">💰💰💰 Moderate</option>
+                                <option value="4">💰💰💰💰 Expensive</option>
+                                <option value="5">💰💰💰💰💰 Very Expensive</option>
+                            </select>
+                        </div>
+
+                        <!-- Safety Filter -->
+                        <div class="filter-group">
+                            <label for="safetyFilter">Safety:</label>
+                            <select id="safetyFilter">
+                                <option value="">Any safety level</option>
+                                <option value="5">⭐⭐⭐⭐⭐ Very Safe</option>
+                                <option value="4">⭐⭐⭐⭐ Safe</option>
+                                <option value="3">⭐⭐⭐ Moderately Safe</option>
+                                <option value="2">⭐⭐ Somewhat Unsafe</option>
+                                <option value="1">⭐ Unsafe</option>
+                            </select>
+                        </div>
+
+                        <!-- Clear Filters Button -->
+                        <button id="clearFiltersBtn" class="btn-clear-filters">
+                            <i class="fas fa-times"></i> Clear All Filters
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Main Search Results -->
+                <section class="main-content">
+                    <div class="results-header">
+                        <h2>Search Results</h2>
+                        <div class="results-count">
+                            <span id="resultsCount">0</span> experiences found
+                        </div>
+                    </div>
+
+                    <!-- Search Results -->
+                    <div class="search-results" id="searchResults">
+                        <!-- Results will be populated here -->
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div class="no-results" id="noResults" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <h3>No experiences found</h3>
+                        <p>Try adjusting your search criteria or filters</p>
+                    </div>
+
+                    <!-- Empty State (shown initially) -->
+                    <div class="empty-state" id="emptyState">
+                        <i class="fas fa-search"></i>
+                        <h3>Ready to discover amazing travel experiences?</h3>
+                        <p>Use the search filters on the left to find destinations, experiences, or keywords that match your interests.</p>
+                        <div class="search-tips">
+                            <h4>Search Tips:</h4>
+                            <ul>
+                                <li>Try searching for specific places like "Arizona" or "New York"</li>
+                                <li>Use keywords like "hiking", "beach", or "culture"</li>
+                                <li>Filter by budget and safety preferences</li>
+                                <li>Combine multiple filters for better results</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Post Modal -->
+    <div class="post-modal-overlay" id="postModalOverlay" style="display: none;">
+        <div class="post-modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Post Title</h2>
+                <button class="close-modal" onclick="closePostModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div id="modalImage"></div>
+                <div class="modal-details">
+                    <p class="modal-location" id="modalLocation"></p>
+                    <div class="modal-meta" id="modalMeta"></div>
+                    <p class="modal-description" id="modalDescription"></p>
+                    <div class="modal-author" id="modalAuthor"></div>
+                    <div class="modal-timestamp" id="modalTimestamp"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="search.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travelista - Share Your Adventures</title>
-    <link rel="stylesheet" href="feed.css">
+    <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
@@ -17,15 +17,16 @@
                     <h1><i class="fas fa-globe-americas"></i> Trip Share</h1>
                 </div>
                 <div class="search-section">
-                    <div class="search-box">
+                    <a href="search.html" class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search destinations, experiences...">
-                    </div>
+                        <span>Search Travel Experiences</span>
+                    </a>
                 </div>
                 <div class="user-info">
                     <span id="welcomeUser">Welcome!</span>
-                    <div class="user-avatar">
-                        <i class="fas fa-user-circle"></i>
+                    <div class="notification-bell" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                     </div>
                     <button id="logoutBtn">Logout</button>
                 </div>
@@ -41,18 +42,13 @@
                             <i class="fas fa-home"></i>
                             <span>Home Feed</span>
                         </a>
-                        <a href="#" class="nav-item" data-section="explore">
-                            <i class="fas fa-compass"></i>
-                            <span>Explore</span>
-                        </a>
-                       
-                        <a href="#" class="nav-item" data-section="profile">
+                        <a href="profile.html" class="nav-item" data-section="profile">
                             <i class="fas fa-user"></i>
                             <span>Profile</span>
                         </a>
-                        <a href="#" class="nav-item" data-section="saved">
-                            <i class="fas fa-bookmark"></i>
-                            <span>Saved Posts</span>
+                        <a href="#" class="nav-item" data-section="chats">
+                            <i class="fas fa-comments"></i>
+                            <span>Chats</span>
                         </a>
                     </nav>
                 </aside> 
@@ -112,6 +108,6 @@
         </main>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="feed.js"></script>
+    <script src="dashboard.js"></script>
 </body>
 </html> 

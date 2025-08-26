@@ -1,0 +1,447 @@
+$(document).ready(function() {
+    // ========= Config =========
+    const API_BASE = (localStorage.getItem('apiBaseUrl') || '').replace(/\/$/, '');
+    const POSTS_ENDPOINT = API_BASE ? `${API_BASE}/api/posts` : '/api/posts';
+    
+    // ========= Auth gate =========
+    const userData = safeParse(localStorage.getItem('userData')) || null;
+    if (!userData) {
+        window.location.href = 'Login.html';
+        return;
+    }
+    $('#welcomeUser').text(`Welcome, ${userData.username}!`);
+    
+    // ========= UI bindings =========
+    $('#logoutBtn').on('click', () => {
+        localStorage.removeItem('userData');
+        window.location.href = 'Login.html';
+    });
+
+    // Modal overlay click handler
+    $(document).on('click', '#postModalOverlay', function(e) {
+        if (e.target === this) {
+            closePostModal();
+        }
+    });
+    
+    // ========= Search functionality =========
+    let allPosts = [];
+    
+    // Make allPosts globally accessible for modal functions
+    window.allPosts = allPosts;
+    
+    // Initialize search
+    initializeSearch();
+    
+    // Event listeners for filters
+    $('#searchInput').on('input', performSearch);
+    $('#locationFilter').on('change', performSearch);
+    $('#budgetFilter').on('change', performSearch);
+    $('#safetyFilter').on('change', performSearch);
+    $('#clearFiltersBtn').on('click', clearAllFilters);
+    
+    // ========= Functions =========
+    
+    async function initializeSearch() {
+        try {
+            // Load posts from server
+            const serverPosts = await loadPosts();
+            const localPosts = getLocalPosts();
+            
+            // Combine and sort posts
+            allPosts = [...(serverPosts || []), ...localPosts];
+            allPosts.sort((a, b) => {
+                const ta = new Date(a?.timestamp || 0).getTime();
+                const tb = new Date(b?.timestamp || 0).getTime();
+                return tb - ta;
+            });
+            
+            // Update global reference
+            window.allPosts = allPosts;
+            
+            // Populate location filter
+            populateLocationFilter();
+            
+            // Don't show all posts initially - start with empty state
+            showEmptyState();
+            
+        } catch (error) {
+            console.error('Failed to initialize search:', error);
+            // Try to load local posts only
+            const localPosts = getLocalPosts();
+            if (localPosts.length > 0) {
+                allPosts = localPosts;
+                window.allPosts = allPosts;
+                populateLocationFilter();
+                showEmptyState();
+            }
+        }
+    }
+    
+    async function loadPosts() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: getPostsEndpoint(),
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (!response || response.success !== true || !Array.isArray(response.posts)) {
+                        return reject(new Error('Unexpected response shape'));
+                    }
+                    resolve(response.posts);
+                },
+                error: function(xhr) {
+                    reject(new Error(xhr?.responseText || 'Network error'));
+                }
+            });
+        });
+    }
+    
+    function getLocalPosts() {
+        try {
+            const localPosts = JSON.parse(localStorage.getItem('localPosts')) || [];
+            return localPosts.map(post => ({
+                ...post,
+                isLocalPost: true
+            }));
+        } catch (error) {
+            console.error('Error loading local posts:', error);
+            return [];
+        }
+    }
+    
+    function populateLocationFilter() {
+        const locations = new Set();
+        
+        allPosts.forEach(post => {
+            if (post.type === 'experience' && post.content) {
+                if (post.content.state) locations.add(post.content.state);
+                if (post.content.city) locations.add(post.content.city);
+                if (post.content.country) locations.add(post.content.country);
+            }
+        });
+        
+        // Add all 50 US states
+        const allUSStates = [
+            'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+            'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+            'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+            'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+            'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+            'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+            'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+            'Wisconsin', 'Wyoming'
+        ];
+        
+        allUSStates.forEach(state => locations.add(state));
+        
+        // Clean up duplicate/similar locations
+        const cleanedLocations = new Set();
+        const locationMap = new Map([
+            ['nyc', 'New York'], ['ny', 'New York'], ['manhattan', 'New York'],
+            ['brooklyn', 'New York'], ['queens', 'New York'], ['bronx', 'New York'],
+            ['la', 'Los Angeles'], ['san fran', 'San Francisco'], ['sf', 'San Francisco'],
+            ['dc', 'Washington DC'], ['washington dc', 'Washington DC']
+        ]);
+        
+        locations.forEach(location => {
+            const normalized = location.toLowerCase();
+            const mapped = locationMap.get(normalized);
+            cleanedLocations.add(mapped || location);
+        });
+        
+        const locationSelect = $('#locationFilter');
+        locationSelect.find('option:not(:first)').remove();
+        
+        Array.from(cleanedLocations).sort().forEach(location => {
+            locationSelect.append(`<option value="${location}">${location}</option>`);
+        });
+    }
+    
+    function performSearch() {
+        const searchTerm = $('#searchInput').val().toLowerCase().trim();
+        const locationFilter = $('#locationFilter').val();
+        const budgetFilter = $('#budgetFilter').val();
+        const safetyFilter = $('#safetyFilter').val();
+        
+        // If search term is empty and no filters are applied, show empty state
+        if (!searchTerm && !locationFilter && !budgetFilter && !safetyFilter) {
+            showEmptyState();
+            return;
+        }
+        
+        const filteredPosts = allPosts.filter(post => {
+            if (post.type !== 'experience' || !post.content) return false;
+            
+            const content = post.content;
+            
+            // Search term filter
+            if (searchTerm) {
+                const searchableText = [
+                    content.placeName || '',
+                    content.description || '',
+                    content.city || '',
+                    content.state || '',
+                    content.country || '',
+                    content.address || '',
+                    post.author || ''
+                ].join(' ').toLowerCase();
+                
+                if (!searchableText.includes(searchTerm)) return false;
+            }
+            
+            // Location filter
+            if (locationFilter) {
+                const postLocation = [
+                    content.state,
+                    content.city,
+                    content.country
+                ].some(loc => loc === locationFilter);
+                
+                if (!postLocation) return false;
+            }
+            
+            // Budget filter
+            if (budgetFilter) {
+                if (content.affordability != budgetFilter) return false;
+            }
+            
+            // Safety filter
+            if (safetyFilter) {
+                if (content.safety < safetyFilter) return false;
+            }
+            
+            return true;
+        });
+        
+        displaySearchResults(filteredPosts);
+    }
+    
+    function displaySearchResults(posts) {
+        const resultsCount = posts.length;
+        $('#resultsCount').text(resultsCount);
+        
+        if (resultsCount === 0) {
+            $('#searchResults').hide();
+            $('#noResults').show();
+            $('#emptyState').hide();
+            return;
+        }
+        
+        $('#noResults').hide();
+        $('#emptyState').hide();
+        $('#searchResults').show();
+        
+        const resultsHtml = posts.map(post => createResultCard(post)).join('');
+        $('#searchResults').html(resultsHtml);
+    }
+    
+    function createResultCard(post) {
+        const content = post.content;
+        const hasImage = content.image && content.image.startsWith('data:image/');
+        const location = [content.placeName, content.city, content.state].filter(Boolean).join(', ');
+        const currentUser = safeParse(localStorage.getItem('userData'));
+        const isOwnPost = currentUser && post.author === currentUser.username;
+        
+        return `
+            <div class="search-result-card" data-post-id="${post.id}">
+                <div class="result-header">
+                    ${hasImage ? `<img src="${content.image}" alt="${content.placeName}" class="result-image">` : ''}
+                    <div class="result-content">
+                        <h3 class="result-title">${content.placeName || 'Untitled Experience'}</h3>
+                        <p class="result-location">
+                            <i class="fas fa-map-marker-alt"></i> ${location}
+                        </p>
+                        <div class="result-meta">
+                            <span class="meta-item safety-rating">${getSafetyStars(content.safety)}</span>
+                            <span class="meta-item affordability-rating">${getAffordabilitySymbols(content.affordability)}</span>
+                        </div>
+                        <p class="result-description">${content.description || 'No description available'}</p>
+                    </div>
+                </div>
+                <div class="result-footer">
+                    <span class="result-author">
+                        by <a href="#" class="author-link" onclick="viewUserProfile('${post.author}')">${post.author}</a>
+                    </span>
+                    <div class="result-actions">
+                        <button class="view-result-btn" onclick="viewPost('${post.id}')">View Post</button>
+                        ${!isOwnPost ? `<button class="view-profile-btn" onclick="viewUserProfile('${post.author}')">View Profile</button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function clearAllFilters() {
+        $('#searchInput').val('');
+        $('#locationFilter').val('');
+        $('#budgetFilter').val('');
+        $('#safetyFilter').val('');
+        performSearch();
+    }
+    
+    function viewPost(postId) {
+        // Find the post data
+        const post = allPosts.find(p => p.id === postId);
+        if (!post) {
+            console.error('Post not found:', postId);
+            return;
+        }
+        
+        // Show post details in a modal
+        showPostModal(post);
+    }
+
+    function viewUserProfile(username) {
+        // Navigate to profile page with the target username
+        localStorage.setItem('viewProfileFor', username);
+        window.location.href = 'profile.html';
+    }
+
+    function showPostModal(post) {
+        const content = post.content;
+        const hasImage = content.image && content.image.startsWith('data:image/');
+        const location = [content.placeName, content.city, content.state].filter(Boolean).join(', ');
+        
+        // Update modal content
+        $('#modalTitle').text(content.placeName || 'Untitled Experience');
+        $('#modalLocation').html(`<i class="fas fa-map-marker-alt"></i> ${location}`);
+        $('#modalMeta').html(`
+            <span class="meta-item safety-rating">${getSafetyStars(content.safety)}</span>
+            <span class="meta-item affordability-rating">${getAffordabilitySymbols(content.affordability)}</span>
+        `);
+        $('#modalDescription').text(content.description || 'No description available');
+        $('#modalAuthor').html(`<strong>Posted by:</strong> ${post.author}`);
+        $('#modalTimestamp').html(`<strong>Posted:</strong> ${new Date(post.timestamp).toLocaleDateString()}`);
+        
+        // Handle image
+        if (hasImage) {
+            $('#modalImage').html(`<img src="${content.image}" alt="${content.placeName}" class="modal-image">`);
+        } else {
+            $('#modalImage').empty();
+        }
+        
+        // Show modal
+        $('#postModalOverlay').fadeIn(300);
+    }
+
+    function closePostModal() {
+        $('#postModalOverlay').fadeOut(300, function() {
+            $(this).hide();
+        });
+    }
+    
+    // ========= Utility functions =========
+    
+    function getSafetyStars(rating) {
+        const r = clampInt(rating, 0, 5);
+        const stars = '⭐'.repeat(r);
+        const labels = ['—', 'Unsafe', 'Somewhat Unsafe', 'Moderate', 'Safe', 'Very Safe'];
+        return `${stars} ${labels[r] || ''}`.trim();
+    }
+    
+    function getAffordabilitySymbols(rating) {
+        const r = clampInt(rating, 0, 5);
+        const symbols = '💰'.repeat(r);
+        const labels = ['—', 'Very Affordable', 'Affordable', 'Moderate', 'Expensive', 'Very Expensive'];
+        return `${symbols} ${labels[r] || ''}`.trim();
+    }
+    
+    function clampInt(n, min, max) {
+        const v = parseInt(n);
+        if (isNaN(v)) return min;
+        return Math.max(min, Math.min(max, v));
+    }
+    
+    function safeParse(str) {
+        try { return JSON.parse(str); } catch { return null; }
+    }
+    
+    function getPostsEndpoint() {
+        const API_BASE = (localStorage.getItem('apiBaseUrl') || '').replace(/\/$/, '');
+        return API_BASE ? `${API_BASE}/api/posts` : '/api/posts';
+    }
+
+    function showEmptyState() {
+        $('#searchResults').hide();
+        $('#noResults').hide();
+        $('#emptyState').show();
+    }
+});
+
+// Global function for view post button
+function viewPost(postId) {
+    // Find the post data
+    const allPosts = window.allPosts || [];
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) {
+        console.error('Post not found:', postId);
+        return;
+    }
+    
+    // Show post details in a modal
+    showPostModal(post);
+}
+
+// Global function to view user profile
+function viewUserProfile(username) {
+    // Navigate to profile page with the target username
+    localStorage.setItem('viewProfileFor', username);
+    window.location.href = 'profile.html';
+}
+
+// Global function to close post modal
+function closePostModal() {
+    $('#postModalOverlay').fadeOut(300, function() {
+        $(this).hide();
+    });
+}
+
+// Global function to show post modal
+function showPostModal(post) {
+    const content = post.content;
+    const hasImage = content.image && content.image.startsWith('data:image/');
+    const location = [content.placeName, content.city, content.state].filter(Boolean).join(', ');
+    
+    // Update modal content
+    $('#modalTitle').text(content.placeName || 'Untitled Experience');
+    $('#modalLocation').html(`<i class="fas fa-map-marker-alt"></i> ${location}`);
+    $('#modalMeta').html(`
+        <span class="meta-item safety-rating">${getSafetyStars(content.safety)}</span>
+        <span class="meta-item affordability-rating">${getAffordabilitySymbols(content.affordability)}</span>
+    `);
+    $('#modalDescription').text(content.description || 'No description available');
+    $('#modalAuthor').html(`<strong>Posted by:</strong> ${post.author}`);
+    $('#modalTimestamp').html(`<strong>Posted:</strong> ${new Date(post.timestamp).toLocaleDateString()}`);
+    
+    // Handle image
+    if (hasImage) {
+        $('#modalImage').html(`<img src="${content.image}" alt="${content.placeName}" class="modal-image">`);
+    } else {
+        $('#modalImage').empty();
+    }
+    
+    // Show modal
+    $('#postModalOverlay').fadeIn(300);
+}
+
+// Global utility functions for modal
+function getSafetyStars(rating) {
+    const r = clampInt(rating, 0, 5);
+    const stars = '⭐'.repeat(r);
+    const labels = ['—', 'Unsafe', 'Somewhat Unsafe', 'Moderate', 'Safe', 'Very Safe'];
+    return `${stars} ${labels[r] || ''}`.trim();
+}
+
+function getAffordabilitySymbols(rating) {
+    const r = clampInt(rating, 0, 5);
+    const symbols = '💰'.repeat(r);
+    const labels = ['—', 'Very Affordable', 'Affordable', 'Moderate', 'Expensive', 'Very Expensive'];
+    return `${symbols} ${labels[r] || ''}`.trim();
+}
+
+function clampInt(n, min, max) {
+    const v = parseInt(n);
+    if (isNaN(v)) return min;
+    return Math.max(min, Math.min(max, v));
+}
