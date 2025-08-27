@@ -434,57 +434,8 @@ $(document).ready(function () {
     }
   }
   
-  /* ---------------- Mock (for front-end only dev) ---------------- */
   
-  function getMockPosts() {
-    // If your backend is not reachable during front-end dev,
-    // we’ll show these so you can style the feed.
-    return [
-      {
-        id: 'p3',
-        author: 'Aisha Khan',
-        timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-        type: 'experience',
-        content: {
-          placeName: 'Kathmandu',
-          country: 'Nepal',
-          safety: 4,
-          affordability: 3,
-          description: 'Thamel’s streets are buzzing! Loved Swayambhunath at sunset.',
-          image: 'https://picsum.photos/seed/kathmandu/800/450'
-        },
-        likes: 12,
-        comments: 3
-      },
-      {
-        id: 'p2',
-        author: 'Diego Rivera',
-        timestamp: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
-        type: 'experience',
-        content: {
-          placeName: 'Bali',
-          country: 'Indonesia',
-          safety: 5,
-          affordability: 2,
-          description: 'Canggu cafes + Uluwatu cliffs = perfection. Surf was mellow.',
-          image: 'https://picsum.photos/seed/bali/800/450'
-        },
-        likes: 45,
-        comments: 10
-      },
-      {
-        id: 'p1',
-        author: 'Jesse',
-        timestamp: new Date(Date.now() - 2 * 86400000).toISOString(),
-        content: {
-          text: 'Quick tip: always carry a local eSIM backup.',
-          image: ''
-        },
-        likes: 7,
-        comments: 1
-      }
-    ];
-  }
+  
   
   /* ---------------- Like & Comment Handlers ---------------- */
   
